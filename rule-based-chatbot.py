@@ -1,9 +1,15 @@
 import random
+from datetime import datetime
 
 class ChatBot:
+    """
+    A simple rule-based chatbot with greetings, questions, farewells,
+    and a help command.
+    """
+
     def __init__(self):
         self.responses = {
-            "greetings": ["hello", "hi", "hey", "good morning", "good evening"],
+            "greetings": ["hello", "hi", "hey"],
             "farewells": ["bye", "goodbye", "see you", "quit", "exit"],
             "questions": {
                 "how are you": [
@@ -14,17 +20,28 @@ class ChatBot:
                 "what is your name": [
                     "I'm PyBot 🤖",
                     "You can call me ChatBot.",
-                    "I don’t have a fancy name, just your friendly bot."
+                    "I’m your Python chatbot assistant!"
                 ],
                 "what can you do": [
                     "I can chat with you and keep you company!",
-                    "Right now, I respond to basic questions and greetings.",
-                    "I’m learning more every day 🚀"
+                    "I respond to greetings, farewells, and simple questions.",
+                    "Try typing 'help' to see my commands 🚀"
                 ]
             }
         }
 
+    def time_based_greeting(self) -> str:
+        """Return greeting based on current time."""
+        hour = datetime.now().hour
+        if hour < 12:
+            return "Good morning! ☀️"
+        elif hour < 18:
+            return "Good afternoon! 🌤️"
+        else:
+            return "Good evening! 🌙"
+
     def get_response(self, user_input: str) -> str:
+        """Generate a response based on user input."""
         user_input = user_input.lower().strip()
 
         # Farewell detection
@@ -33,7 +50,11 @@ class ChatBot:
 
         # Greeting detection
         if user_input in self.responses["greetings"]:
-            return random.choice(["Hello there!", "Hey! How’s it going?", "Hi 👋"])
+            return random.choice(["Hello there!", "Hey! How’s it going?", self.time_based_greeting()])
+
+        # Help command
+        if user_input == "help":
+            return "I can respond to greetings, farewells, and simple questions like:\n- how are you\n- what is your name\n- what can you do"
 
         # Question detection
         for question, answers in self.responses["questions"].items():
@@ -48,6 +69,7 @@ class ChatBot:
         ])
 
     def run(self):
+        """Start the chatbot loop."""
         print("🤖 PyBot: Hello! Type 'bye' or 'exit' to quit.")
         while True:
             user_input = input("You: ")
